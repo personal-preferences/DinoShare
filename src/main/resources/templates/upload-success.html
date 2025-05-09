@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>파일 업로드 성공</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f7f6;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 90vh;
+    }
+    .container {
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+    }
+    h1 {
+      color: #4CAF50;
+      margin-bottom: 15px;
+    }
+    .success-message {
+      color: #555;
+      margin-bottom: 30px;
+      font-size: 1.1em;
+    }
+    .link-info {
+      background-color: #e8f5e9;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: left;
+      word-break: break-all; /* 긴 URL 자동 줄바꿈 */
+    }
+    .link-label {
+      font-weight: bold;
+      color: #388E3C;
+      display: block;
+      margin-bottom: 5px;
+    }
+    .share-url-text {
+      font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+      font-size: 0.95em;
+      color: #1A237E;
+    }
+    .share-url-link {
+      font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+      font-size: 0.95em;
+      color: #1A237E;
+      text-decoration: none;
+    }
+    .share-url-link:hover {
+      text-decoration: underline;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.9em;
+      margin-left: 10px;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #388E3C;
+    }
+    .expiration-info {
+      background-color: #fff9c4;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .expiration-label {
+      font-weight: bold;
+      color: #FBC02D;
+      display: block;
+      margin-bottom: 5px;
+    }
+    .expiration-time {
+      font-size: 0.95em;
+      color: #5D4037;
+    }
+
+    .back-link {
+      margin-top: 20px;
+      display: block;
+      color: #1976D2;
+      text-decoration: none;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>🎉 파일 업로드 성공!</h1>
+
+  <p class="success-message">파일이 성공적으로 업로드되었으며 공유 링크가 생성되었습니다.</p>
+
+  <div class="link-info">
+    <span class="link-label">공유 링크:</span>
+    <span id="shareUrlText" class="share-url-text" th:text="${shareUrl}">/share/generated-link-id</span>
+    <button onclick="copyShareUrl()">복사</button>
+    <p><a id="shareUrlLink" th:href="@{__${shareUrl}__}" class="share-url-link">링크로 이동</a></p>
+  </div>
+
+  <div class="expiration-info">
+    <span class="expiration-label">만료 시간:</span>
+    <span class="expiration-time" th:text="${#temporals.format(expirationTime, 'yyyy년 MM월 dd일 HH시 mm분 ss초')}">yyyy년 MM월 dd일 HH시 mm분 ss초</span>
+    <p class="expiration-time">만료 시 이 링크는 더 이상 접근할 수 없습니다.</p>
+  </div>
+
+  <a href="/upload" class="back-link">다른 파일 업로드</a>
+
+  <script th:inline="javascript">
+    // Thymeleaf 인라인 스크립트로 shareUrl 값 가져오기
+    var shareUrl = '[[${shareUrl}]]';
+
+    function copyShareUrl() {
+      // 텍스트 노드 선택 (<a> 태그의 텍스트 또는 <span> 태그의 텍스트)
+      var urlTextElement = document.getElementById('shareUrlText'); // th:text를 적용한 span 선택
+
+      if (!urlTextElement) {
+        console.error("Share URL text element not found.");
+        alert('공유 링크 복사에 실패했습니다. 수동으로 복사해주세요.');
+        return;
+      }
+
+      // 텍스트 내용을 클립보드에 복사
+      navigator.clipboard.writeText(shareUrl).then(function() {
+        alert('공유 링크가 클립보드에 복사되었습니다.');
+      }, function(err) {
+        console.error('링크 복사 실패: ', err);
+        alert('공유 링크 복사에 실패했습니다. 수동으로 복사해주세요.');
+      });
+
+      // 이전 방식 (execCommand) - navigator.clipboard 지원 안 하는 브라우저 대비 (최신 브라우저는 잘 지원)
+      /*
+      var range = document.createRange();
+      range.selectNodeContents(urlTextElement); // 요소의 내용 선택
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+      try {
+          document.execCommand('copy');
+          alert('공유 링크가 클립보드에 복사되었습니다.');
+      } catch (err) {
+          console.error('링크 복사 실패: ', err);
+          alert('공유 링크 복사에 실패했습니다. 수동으로 복사해주세요.');
+      }
+      window.getSelection().removeAllRanges(); // 선택 해제
+      */
+    }
+  </script>
+</div>
+</body>
+</html>
