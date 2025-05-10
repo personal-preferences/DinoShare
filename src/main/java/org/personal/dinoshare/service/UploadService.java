@@ -53,13 +53,15 @@ public class UploadService {
             String fileExtension = "";
             int dot = originalFilename.lastIndexOf(".");
 
-            if (0 < dot && dot <originalFilename.length() - 1) {
-                fileExtension = originalFilename.substring(dot);
+            if (0<dot && dot<originalFilename.length()-1) {
+                fileExtension = originalFilename.substring(dot+1);
             }
 
             // UUID를 사용한 파일 이름으로 경로 생성
             String fileName = UUID.randomUUID().toString() + "." + fileExtension;
             Path targetPath = uploadPath.resolve(fileName);
+
+            System.out.println(targetPath);
 
             try {
                 // 파일 저장
@@ -93,4 +95,8 @@ public class UploadService {
             return false;
         }
     }
+
+//    public FileDetailsDTO getFileDetails(String link) {
+//        return file
+//    }
 }
