@@ -2,6 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
+  <link rel="icon" href="/images/dino_favicon.png" sizes="192x192" type="image/x-icon">
   <title>DinoShare: 임시 파일 공유</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <style>
@@ -24,10 +25,44 @@
       max-width: 600px;
       width: 100%;
     }
+    /*h1 {*/
+    /*  color: #1A237E; !* Dark blue *!*/
+    /*  margin-bottom: 25px;*/
+    /*  text-align: center;*/
+    /*}*/
+
+    .header-container {
+      text-align: center; /* 내부 콘텐츠 중앙 정렬 */
+      margin-bottom: 25px; /* 헤더 아래 여백 */
+    }
+
+    /* 메인 제목 (DinoShare) 스타일 */
     h1 {
-      color: #1A237E; /* Dark blue */
-      margin-bottom: 25px;
+      color: #1A237E; /* 원래 제목 색상 (짙은 파란색) */
+      margin: 0; /* 기본 마진 제거 */
       text-align: center;
+      font-size: 2.5em; /* 제목 글자 크기 (조절 가능) */
+
+      /* 이미지와 텍스트를 가로로 정렬하기 위해 flexbox 사용 */
+      display: flex;
+      align-items: center; /* 수직 중앙 정렬 */
+      justify-content: center; /* 수평 중앙 정렬 */
+      gap: 0px; /* 제목 텍스트와 이미지 사이 간격 */
+    }
+
+    /* 공룡 아이콘 (dino-title-icon) 스타일 - 크기만 조정 */
+    .dino-title-icon {
+      width: 100px; /* 공룡 이미지의 크기 조절. 이 값을 변경하여 원하는 크기를 찾으세요. */
+      height: auto; /* 가로세로 비율 유지 */
+      vertical-align: bottom;
+    }
+
+    /* 부제목 (임시 파일 공유) 스타일 - 기본적인 여백 및 글자 크기 */
+    h3 {
+      font-size: 1.1em; /* 부제목 글자 크기 */
+      color: #555; /* 부제목 색상 */
+      margin-top: 10px; /* h1과 h3 사이의 여백 */
+      font-weight: normal; /* 기본 볼드 설정이 있다면 해제 (선택 사항) */
     }
     .form-group {
       margin-bottom: 20px;
@@ -148,9 +183,14 @@
 </head>
 <body>
 <div class="container">
-  <h1>임시 파일 공유</h1>
-
-<!--  <div th:if="${#fields.hasErrors('global')}" class="global-error">-->
+  <div class="header-container">
+    <h1>
+      DinoShare
+      <img src="/images/dino_main.png" alt="Logo" class="dino-title-icon">
+    </h1>
+  </div>
+  <h3>임시 파일 공유</h3>
+  <!--  <div th:if="${#fields.hasErrors('global')}" class="global-error">-->
 <!--    <p th:each="err : ${#fields.errors('global')}" th:text="${err}"></p>-->
 <!--  </div>-->
 <!--  <div th:if="${globalError}" class="global-error">-->
