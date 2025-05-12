@@ -190,14 +190,12 @@
     </h1>
 <!--    <h3>파일 업로드</h3>-->
   </div>
-<!--  <h3>임시 파일 공유</h3>-->
-  <!--  <div th:if="${#fields.hasErrors('global')}" class="global-error">-->
+<!--  <div th:if="${#fields.hasErrors('global')}" class="global-error">-->
 <!--    <p th:each="err : ${#fields.errors('global')}" th:text="${err}"></p>-->
 <!--  </div>-->
 <!--  <div th:if="${globalError}" class="global-error">-->
 <!--    <p th:text="${globalError}"></p>-->
 <!--  </div>-->
-
 
   <form th:action="@{/upload}" method="post" enctype="multipart/form-data" th:object="${uploadForm}">
 
@@ -211,6 +209,14 @@
       </div>
       <ul class="file-list" id="fileList">
       </ul>
+    </div>
+
+    <div th:if="${globalError}" class="error-message">
+      <p th:text="${globalError}"></p>
+    </div>
+
+    <div th:if="${#fields.hasErrors('global')}" class="error-message">
+      <p th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
     </div>
 
 
