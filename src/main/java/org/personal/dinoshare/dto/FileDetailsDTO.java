@@ -11,7 +11,7 @@ import java.nio.file.Path;
 @ToString
 public class FileDetailsDTO {
 
-    private String orginalFileName;
+    private String originalFileName;
     private String fileName;
     private Path filePath;
     private long fileSize;
