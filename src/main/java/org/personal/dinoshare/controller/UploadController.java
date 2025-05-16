@@ -87,7 +87,7 @@ public class UploadController {
         }
 
         // 파일을 선택하지 않은 경우
-        if (files==null || files.isEmpty() || files.stream().allMatch(MultipartFile::isEmpty)) {
+        if (files == null || files.isEmpty() || files.stream().allMatch(MultipartFile::isEmpty)) {
             bindingResult.reject("files.empty", "파일 부재");
 
             return "upload-form";

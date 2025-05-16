@@ -30,7 +30,7 @@ public class ValidationService {
     public void validateFile(MultipartFile file) throws FileValidationException {
 
         // 파일을 선택하지 않은 경우
-        if (file==null || file.isEmpty()) {
+        if (file == null || file.isEmpty()) {
             throw new FileValidationException("File is empty");
         }
 
@@ -43,7 +43,7 @@ public class ValidationService {
         // MIME 타입 검증
         String contentType = file.getContentType();
 
-        if (contentType==null || contentType.trim().isEmpty()) {
+        if (contentType == null || contentType.trim().isEmpty()) {
             throw new FileTypeException("File content-type is empty: " + file.getName(), contentType, allowedMimeTypes);
         }
 

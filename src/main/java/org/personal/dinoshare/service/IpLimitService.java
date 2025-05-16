@@ -25,7 +25,7 @@ public class IpLimitService {
     public boolean isOverLimit(String ip) {
 
         // 유효하지 않은 IP -> 통과
-        if (ip==null || ip.trim().isEmpty()) {
+        if (ip == null || ip.trim().isEmpty()) {
             return false;
         }
 
@@ -39,12 +39,12 @@ public class IpLimitService {
     public void incrementCount(String ip) {
 
         // 유효하지 않은 IP -> X
-        if (ip==null || ip.trim().isEmpty()) {
+        if (ip == null || ip.trim().isEmpty()) {
             return;
         }
 
         ipCountCache.asMap().compute(ip, (key, count) -> {
-            if (count==null) {
+            if (count == null) {
                 // 새로운 IP는 1로 초기화
                 return new AtomicInteger(1);
             } else {
@@ -61,12 +61,12 @@ public class IpLimitService {
     public void decrementCount(String ip) {
 
         // 유효하지 않은 IP -> X
-        if (ip==null || ip.trim().isEmpty()) {
+        if (ip == null || ip.trim().isEmpty()) {
             return;
         }
 
         ipCountCache.asMap().compute(ip, (key, count) -> {
-            if (count==null) {
+            if (count == null) {
                 // 감소할 count가 없는 경우
                 return null;
             }

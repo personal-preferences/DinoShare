@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.personal.dinoshare.domain.LinkDetails;
 import org.personal.dinoshare.dto.FileDetailsDTO;
 import org.personal.dinoshare.service.LinkService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -36,12 +38,15 @@ public class DownloadController {
     private String uploadDir;
 
     private final LinkService linkService;
+    private static final Logger logger = LoggerFactory.getLogger(DownloadController.class);
 
     @GetMapping("/{link}")
     public String showFileList(@PathVariable String link, Model model) {
         LinkDetails linkDetails = linkService.getLink(link);
 
-        if (linkDetails==null || linkDetails.getFiles()==null || linkDetails.getFiles().isEmpty()) {
+        if (linkDetails == null) {
+            model.addAttribute("errorMessage", "링크가 존재하지 않습니다.");
+        } else if (linkDetails.getFiles() == null || linkDetails.getFiles().isEmpty()) {
             model.addAttribute("errorMessage", "파일이 존재하지 않습니다.");
         }
 
@@ -57,7 +62,7 @@ public class DownloadController {
 
         LinkDetails linkDetails = linkService.getLink(link);
 
-        if (linkDetails==null) {
+        if (linkDetails == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "공유 링크가 유효하지 않습니다.: " + link);
         }
 
@@ -85,9 +90,9 @@ public class DownloadController {
             try {
                 contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
             } catch (IOException e) {
-                System.err.println("Fail to determine file type: " + link + " - " + e.getMessage());
+                logger.error("Fail to determine file type: {} - {}", link, e.getMessage());
             } catch (NullPointerException e) {
-                System.err.println("File is null: " + link + " - " + e.getMessage());
+                logger.error("File is null: {} - {}", link, e.getMessage());
             }
 
             // 기본값 사용
@@ -95,14 +100,14 @@ public class DownloadController {
                 contentType = "application/octet-stream";
             }
 
-            String originalFilename = resource.getFilename();
+            String originalFileName = resource.getFilename();
 
-            if (originalFilename == null) {
-                originalFilename = link;
+            if (originalFileName == null) {
+                originalFileName = link;
             }
 
             // 헤더 설정
-            String encodedFileName = URLEncoder.encode(originalFilename, StandardCharsets.UTF_8).replaceAll("\\+", "%20");
+            String encodedFileName = URLEncoder.encode(originalFileName, StandardCharsets.UTF_8).replaceAll("\\+", "%20");
             String headerValue = "attachment; filename=\"" + encodedFileName + "\"; filename*=UTF-8''" + encodedFileName;
 
             return ResponseEntity.ok()

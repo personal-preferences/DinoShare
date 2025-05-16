@@ -295,12 +295,11 @@
     filesToUpload = currentFilesArray.concat(newFilesArray);
 
     // 최대 파일 개수 제한 (예: 3개) - 필요하다면 로직 추가
-    // const maxFileCount = 3; // UploadService의 max-file-count와 일치해야 함
-    // if (filesToUpload.length > maxFileCount) {
-    //     filesToUpload = filesToUpload.slice(0, maxFileCount);
-    //     alert(`파일은 최대 ${maxFileCount}개까지만 선택 가능합니다.`);
-    // }
-
+    const maxFileCount = 3; // UploadService의 max-file-count와 일치해야 함
+    if (filesToUpload.length > maxFileCount) {
+        filesToUpload = filesToUpload.slice(0, maxFileCount);
+        alert(`파일은 최대 ${maxFileCount}개까지만 선택 가능합니다.`);
+    }
 
     // 업데이트된 파일 배열로 새로운 FileList 객체 생성
     const updatedFileList = createFileList(filesToUpload);

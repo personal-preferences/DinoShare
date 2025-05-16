@@ -3,6 +3,8 @@ package org.personal.dinoshare.service;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.personal.dinoshare.dto.FileDetailsDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +27,8 @@ public class UploadService {
     private String uploadDir;
 
     private Path uploadPath;
+
+    private static final Logger logger = LoggerFactory.getLogger(UploadService.class);
 
     @PostConstruct
     public void init() {
@@ -91,7 +95,9 @@ public class UploadService {
         try {
             return Files.deleteIfExists(filePath);
         } catch (IOException e) {
-            System.err.println("Fail to delete file: " + filePath + " - " + e.getMessage());
+            logger.error("Fail to delete file {}: {}", e.getMessage(), filePath);
+//            System.err.println("Fail to delete file: " + filePath + " - " + e.getMessage());
+
             return false;
         }
     }

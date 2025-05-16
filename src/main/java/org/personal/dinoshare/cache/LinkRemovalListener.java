@@ -7,6 +7,8 @@ import org.personal.dinoshare.domain.LinkDetails;
 import org.personal.dinoshare.dto.FileDetailsDTO;
 import org.personal.dinoshare.service.IpLimitService;
 import org.personal.dinoshare.service.UploadService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -17,12 +19,13 @@ public class LinkRemovalListener implements RemovalListener<String, LinkDetails>
 
     private final UploadService uploadService;
     private final IpLimitService ipLimitService;
+    private static final Logger logger = LoggerFactory.getLogger(LinkRemovalListener.class);
 
 
     @Override
     public void onRemoval(String link, LinkDetails details, RemovalCause cause) {
 
-        if (details==null) {
+        if (details == null) {
             return;
         }
 
@@ -34,7 +37,7 @@ public class LinkRemovalListener implements RemovalListener<String, LinkDetails>
                     uploadService.deleteFiles(file.getFilePath());
                     System.out.println("File deleted: " + file.getFilePath());
                 } catch (Exception e) {
-                    System.err.println("Fail to delete " + file.getFilePath() + ": " + e.getMessage());
+                    logger.error("Fail to delete {}: {}", file.getFilePath(), e.getMessage());
                 }
             }
         } else {
@@ -49,7 +52,8 @@ public class LinkRemovalListener implements RemovalListener<String, LinkDetails>
                 ipLimitService.decrementCount(clientIp);
                 System.out.println("Decremented IP count: " + clientIp);
             } catch (Exception e) {
-                System.err.println("Fail to decrement IP count " + clientIp + ": " + e.getMessage());
+                logger.error("Fail to decrement IP count {}: {}", clientIp, e.getMessage());
+//                System.err.println("Fail to decrement IP count " + clientIp + ": " + e.getMessage());
             }
         } else {
             System.out.println("No client IP found");
