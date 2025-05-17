@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" href="/images/dino_favicon.png" sizes="192x192" type="image/x-icon">
+  <title>DinoShare: 파일 업로드 성공</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f7f6;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 90vh;
+    }
+    .container {
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+    }
+    h1 {
+      color: #4CAF50;
+      margin-bottom: 15px;
+    }
+    .success-message {
+      color: #555;
+      margin-bottom: 30px;
+      font-size: 1.1em;
+    }
+    .centered-link-group {
+      text-align: center; /* 내부의 인라인 요소(span, button)들을 가운데 정렬합니다. */
+      margin-top: 10px; /* '공유 링크:' 레이블과의 간격 */
+      margin-bottom: 10px; /* '링크로 이동' 링크와의 간격 */
+    }
+    .link-info {
+      background-color: #e8f5e9;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: left;
+      word-break: break-all; /* 긴 URL 자동 줄바꿈 */
+    }
+    .link-label {
+      font-weight: bold;
+      color: #388E3C;
+      display: block;
+      margin-bottom: 5px;
+    }
+    .share-url-text { /* HTML에서 이 클래스를 사용하고 있으니 클래스 선택자로 */
+      display: inline-block; /* 패딩, 마진, 너비 적용을 위해 */
+      padding: 5px 5px; /* 내부 패딩 */
+      background-color: #e9ecef; /* 링크 배경색 */
+      border: 1px solid #ced4da; /* 테두리 */
+      border-radius: 8px; /* 모서리 둥글게 */
+      font-size: 1.1em;
+      color: #495057;
+      word-break: break-all; /* 긴 링크가 영역을 넘치지 않도록 자동 줄바꿈 */
+      margin-right: 5px; /* 복사 버튼과의 간격 */
+      vertical-align: middle; /* 복사 버튼과 수직 중앙 정렬 */
+      max-width: 100%; /* 버튼 너비와 간격을 고려한 링크 텍스트의 최대 너비 */
+      text-align: left; /* 링크 텍스트 자체는 왼쪽 정렬 */
+      /*margin-bottom: 10px;*/
+    }
+    .share-url-link {
+      font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+      font-size: 0.95em;
+      color: white;
+      text-decoration: none;
+    }
+    .share-url-link:hover {
+      text-decoration: underline;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.9em;
+      margin-left: 10px;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #388E3C;
+    }
+    .expiration-info {
+      background-color: #fff9c4;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .expiration-label {
+      font-weight: bold;
+      color: #FBC02D;
+      display: block;
+      margin-bottom: 5px;
+    }
+    .expiration-time {
+      font-size: 0.95em;
+      color: #5D4037;
+    }
+
+    .back-link {
+      margin-top: 20px;
+      display: block;
+      color: #1976D2;
+      text-decoration: none;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>🎉&nbsp;&nbsp;파일 업로드 성공!</h1>
+
+  <p class="success-message">파일이 성공적으로 업로드되어 공유 링크가 생성되었습니다.</p>
+
+  <div class="link-info">
+    <span class="link-label">공유 링크:</span>
+    <div class="centered-link-group">
+      <span id="shareUrlText" class="share-url-text" th:text="${shareUrl}">/share/generated-link-id</span>
+      <button onclick="copyShareUrl()">복사</button>
+      <p>
+        <button id="downloadInitiator" class="share-url-link" onclick="startDownload()">다운로드</button>
+      </p>
+      <p id="downloadStatus" class="status-message" style="display: none;">
+        다운로드를 시작합니다...
+      </p>
+    </div>
+  </div>
+
+  <div class="expiration-info">
+    <span class="expiration-label">만료 시간:</span>
+    <span class="expiration-time" th:text="${#temporals.format(expirationTime, 'yyyy년 MM월 dd일 HH시 mm분 ss초')}">yyyy년 MM월 dd일 HH시 mm분 ss초</span>
+    <p class="expiration-time">만료 시 이 링크는 더 이상 접근할 수 없습니다.</p>
+  </div>
+
+<!--  <a th:href="@{/}" class="btn btn-primary">다른 파일 업로드</a>-->
+  <button onclick="location.href='/'">다른 파일 업로드</button>
+
+  <script th:inline="javascript">
+    // Thymeleaf 인라인 스크립트로 shareUrl 값 가져오기
+    var shareUrl = '[[${shareUrl}]]';
+
+    function copyShareUrl() {
+      // 텍스트 노드 선택 (<a> 태그의 텍스트 또는 <span> 태그의 텍스트)
+      var urlTextElement = document.getElementById('shareUrlText'); // th:text를 적용한 span 선택
+
+      if (!urlTextElement) {
+        console.error("Share URL text element not found.");
+        alert('공유 링크 복사에 실패했습니다. 수동으로 복사해주세요.');
+        return;
+      }
+
+      // 텍스트 내용을 클립보드에 복사
+      navigator.clipboard.writeText(shareUrl).then(function() {
+        alert('공유 링크가 클립보드에 복사되었습니다.');
+      }, function(err) {
+        console.error('링크 복사 실패: ', err);
+        alert('공유 링크 복사에 실패했습니다. 수동으로 복사해주세요.');
+      });
+    }
+
+    function startDownload() {
+      // Thymeleaf 변수 ${shareUrl}을 JavaScript 변수로 가져옵니다.
+      const shareUrl = /*[[${shareUrl}]]*/ '/share/example-id';
+      const downloadStatus = document.getElementById('downloadStatus');
+      const downloadButton = document.getElementById('downloadInitiator');
+
+      // 상태 메시지 표시
+      if (downloadStatus) {
+        downloadStatus.style.display = 'block';
+        downloadStatus.innerText = '다운로드를 시작합니다... 잠시만 기다려 주세요.';
+      }
+      // 버튼 비활성화하여 중복 클릭 방지
+      if (downloadButton) {
+        downloadButton.disabled = true;
+        downloadButton.style.backgroundColor = '#cccccc';
+        downloadButton.style.cursor = 'not-allowed';
+      }
+
+      // 동적으로 <a> 태그를 생성하여 다운로드 시작
+      const link = document.createElement('a');
+      link.href = shareUrl;
+      link.style.display = 'none'; // 요소를 화면에 표시하지 않음
+
+      // 'download' 속성은 브라우저가 파일명 제안에 사용하지만, 백엔드의 Content-Disposition 헤더가 더 강력합니다.
+      // 예를 들어, link.download = '나의파일.pdf'; 와 같이 특정 파일명을 강제할 수 있습니다.
+
+      document.body.appendChild(link); // DOM에 추가해야 click()을 호출할 수 있음
+      link.click(); // 클릭 이벤트를 시뮬레이션하여 다운로드 시작
+      document.body.removeChild(link); // 다운로드 시작 후 요소 제거
+
+      // 다운로드 시작 메시지 업데이트 (예: 다운로드 완료 후 메시지 변경은 서버에서 알림을 받지 않는 이상 어려움)
+      setTimeout(() => {
+        if (downloadStatus) {
+          downloadStatus.innerText = '파일 다운로드가 시작되었습니다!';
+        }
+        // 5초 후 메시지를 숨길 수도 있습니다.
+        // setTimeout(() => {
+        //     if (downloadStatus) {
+        //         downloadStatus.style.display = 'none';
+        //     }
+        // }, 5000);
+      }, 1000); // 1초 후 메시지 업데이트
+    }
+  </script>
+</div>
+</body>
+</html>
